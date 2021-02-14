@@ -1,29 +1,44 @@
 ---
-- name: install nginx
+- name: get build image, git clone repo, get deps, build artifact
   hosts: web
   become: yes
   tasks:
-  - name: Ensure nginx package is present
-    apt: 
-     name: nginx
-     state: present
-  - name: Ensure index.html is present
-    copy:
-     src: index.html
-     dest: /var/www/html
-  - name: Ensure nginx is running
-    service:
-    name: nginx
-    state: started
-- name: install db
-  hosts: db
+
+  - name: Install needed packages on builder machine maven and git
+    apt: pkg={{ item }}
+    with_items: 
+      - git
+      - maven
+    update_cache: yes
+
+  - name: Ensure git is present
+    apt:
+      name: git
+      state: present
+    
+  - name: Ensure maven is present
+    apt:
+      name: maven
+      state: present
+    
+  - name: git clone target repo
+     git:
+      repo: https://github.com/shooxep0daemon/ansible1.git
+      dest: /home/buildhere/
+
+  - name: Ensure artifact is built from source
+    shell: "cd /home/buildhere && mvn package"
+    register: "mvn_result"
+
+- name: Run built artefact
+  hosts: db,web
   become: yes
   tasks:
-  - name: Ensure postgresql is present
+  - name: copy built artifact
     apt:
      name: postgresql
      state: present
-  - name: Ensure postgresql is running
+  - name: run build artifact
     service:
      name: postgresql
      tst
