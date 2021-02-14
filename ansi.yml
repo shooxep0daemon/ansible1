@@ -30,15 +30,18 @@
     shell: "cd /home/buildhere && mvn package"
     register: "mvn_result"
 
+  - name: fetch built artifact to host
+    fetch: src=/home/buildhere/target/hello-world-1.0-SNAPSHOT.jar dest=/tmp/arifact/hello-world-1.0-SNAPSHOT.jar
+
 - name: Run built artefact
-  hosts: db,web
+  hosts: web
   become: yes
   tasks:
-  - name: copy built artifact
-    apt:
-     name: postgresql
-     state: present
-  - name: run build artifact
-    service:
-     name: postgresql
-     tst
+  - name: copy built artifact to remote
+    copy: src=/tmp/artifact/hello-world-1.0-SNAPSHOT.jar dest=/runme/hello-world-1.0-SNAPSHOT.jar
+  
+  - name: ensure jar file is present
+    
+
+  - name: run built artifact
+    shell: java -jar /runme/hello-world-1.0-SNAPSHOT.jar
