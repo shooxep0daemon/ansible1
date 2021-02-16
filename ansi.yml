@@ -15,7 +15,7 @@
     state: present
 
   - name: Ensure git cloned sample webapp repo
-     git:
+    git:
       repo: https://github.com/boxfuse/boxfuse-sample-java-war-hello.git
       dest: /home/buildhere/
       clone: yes
