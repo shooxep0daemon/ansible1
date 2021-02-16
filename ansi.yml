@@ -1,6 +1,6 @@
 ---
 - name: get build image, git clone repo, get deps, build artifact
-  hosts: web
+  hosts: builder
   become: yes
 
   tasks:
