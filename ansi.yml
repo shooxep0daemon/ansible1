@@ -49,7 +49,7 @@
       flat: yes
     when: "{{ inventory_hostname == 'builder'}}"
   
-   - name: Ensure test webapp is copyied to web
+  - name: Ensure test webapp is copyied to web
     copy:
       src: buffer/hello-1.0.war
       dest: /var/lib/tomcat9/webapps
