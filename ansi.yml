@@ -28,7 +28,6 @@
       src: /home/buildhere/target/hello-1.0.war
       dest: buffer/
       flat: yes
-    when: "{{ inventory_hostname == 'builder'}}"
 
 - name: Run built artefact in production env
   hosts: web
@@ -41,7 +40,7 @@
     copy:
       src: buffer/hello-1.0.war
       dest: /var/lib/tomcat9/webapps
-    when: "{{ inventory_hostname == 'web'}}"
+    
 
   - name: Ensure JRE and tomcat9 is present
     apt: 
