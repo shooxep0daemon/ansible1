@@ -21,7 +21,7 @@
       clone: yes
 
   - name: Ensure artifact is built from source
-    command: mvn -f /home/buildhere/boxfuse/pom.xml clean package
+    command: mvn -f /home/buildhere/pom.xml clean package
 
 - name: Run built artefact in production env
   hosts: web
@@ -44,7 +44,7 @@
 
   - name: Ensure test webapp is synchorized with production node
     synchronize:
-      src: /home/buildhere/boxfuse/target/hello-1.0.war
+      src: /home/buildhere/target/hello-1.0.war
       dest: /var/lib/tomcat9/webapps
       delegate_to: web
    
