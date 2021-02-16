@@ -23,12 +23,26 @@
   - name: Ensure artifact is built from source
     command: mvn -f /home/buildhere/pom.xml clean package
 
+  - name: Ensure test webapp is copyied from builder
+    fetch:
+      src: /home/buildhere/target/hello-1.0.war
+      dest: buffer/
+      flat: yes
+    when: "{{ inventory_hostname == 'builder'}}"
+
 - name: Run built artefact in production env
   hosts: web
   become: yes
 
   tasks:
   
+
+  - name: Ensure test webapp is copyied to web
+    copy:
+      src: buffer/hello-1.0.war
+      dest: /var/lib/tomcat9/webapps
+    when: "{{ inventory_hostname == 'web'}}"
+
   - name: Ensure JRE and tomcat9 is present
     apt: 
       pkg: 
@@ -41,19 +55,8 @@
     service:
       name: tomcat9
       state: started
-
-  - name: Ensure test webapp is copyied from builder
-    fetch:
-      src: /home/buildhere/target/hello-1.0.war
-      dest: buffer/
-      flat: yes
-    when: "{{ inventory_hostname == 'builder'}}"
   
-  - name: Ensure test webapp is copyied to web
-    copy:
-      src: buffer/hello-1.0.war
-      dest: /var/lib/tomcat9/webapps
-    when: "{{ inventory_hostname == 'web'}}"
+
 
 
    
