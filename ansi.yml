@@ -2,36 +2,26 @@
 - name: get build image, git clone repo, get deps, build artifact
   hosts: web
   become: yes
+
   tasks:
 
-  - name: Install needed packages on builder machine maven and git
+  - name: Ensure git,maven,default jdk is present
     apt: pkg={{ item }}
     with_items: 
       - git
       - maven
+      - default-jdk
     update_cache: yes
+    state: present
 
-  - name: Ensure git is present
-    apt:
-      name: git
-      state: present
-    
-  - name: Ensure maven is present
-    apt:
-      name: maven
-      state: present
-    
-  - name: git clone target repo
+  - name: Ensure git cloned sample webapp repo
      git:
-      repo: https://github.com/shooxep0daemon/ansible1.git
+      repo: https://github.com/boxfuse/boxfuse-sample-java-war-hello.git
       dest: /home/buildhere/
+      clone: yes
 
   - name: Ensure artifact is built from source
-    shell: "cd /home/buildhere && mvn package"
-    register: "mvn_result"
-
-  - name: fetch built artifact to host
-    fetch: src=/home/buildhere/target/hello-world-1.0-SNAPSHOT.jar dest=/tmp/arifact/hello-world-1.0-SNAPSHOT.jar
+    command: mvn -f /home/buildhere/boxfuse/pom.xml clean package
 
 - name: Run built artefact
   hosts: web
