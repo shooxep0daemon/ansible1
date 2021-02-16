@@ -6,13 +6,13 @@
   tasks:
 
   - name: Ensure git,maven,default jdk is present
-    apt: pkg={{ item }}
-    with_items: 
+    apt: 
+      pkg: 
       - git
       - maven
       - default-jdk
-    update_cache: yes
-    state: present
+      update_cache: yes
+      state: present
 
   - name: Ensure git cloned sample webapp repo
     git:
@@ -30,12 +30,12 @@
   tasks:
   
   - name: Ensure JRE and tomcat9 is present
-    apt: pkg={{ item }}
-    with_items: 
+    apt: 
+      pkg: 
       - tomcat9
       - default-jre
-    update_cache: yes
-    state: present
+      update_cache: yes
+      state: present
   
   - name: Ensure webserver tomcat is runnung
     service:
