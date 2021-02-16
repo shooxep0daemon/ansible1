@@ -43,7 +43,7 @@
       state: started
 
   - name: Ensure test webapp is synchorized with production node
-    synchorize:
+    synchronize:
       src: /home/buildhere/boxfuse/target/hello-1.0.war
       dest: /var/lib/tomcat9/webapps
       delegate_to: web
