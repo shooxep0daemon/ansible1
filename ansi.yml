@@ -23,15 +23,28 @@
   - name: Ensure artifact is built from source
     command: mvn -f /home/buildhere/boxfuse/pom.xml clean package
 
-- name: Run built artefact
+- name: Run built artefact in production env
   hosts: web
   become: yes
-  tasks:
-  - name: copy built artifact to remote
-    copy: src=/tmp/artifact/hello-world-1.0-SNAPSHOT.jar dest=/runme/hello-world-1.0-SNAPSHOT.jar
-  
-  - name: ensure jar file is present
-    
 
-  - name: run built artifact
-    shell: java -jar /runme/hello-world-1.0-SNAPSHOT.jar
+  tasks:
+  
+  - name: Ensure JRE and tomcat9 is present
+    apt: pkg={{ item }}
+    with_items: 
+      - tomcat9
+      - default-jre
+    update_cache: yes
+    state: present
+  
+  - name: Ensure webserver tomcat is runnung
+    service:
+      name: tomcat9
+      state: started
+
+  - name: Ensure test webapp is synchorized with production node
+    synchorize:
+      src: /home/buildhere/boxfuse/target/hello-1.0.war
+      dest: /var/lib/tomcat9/webapps
+      delegate_to: web
+   
